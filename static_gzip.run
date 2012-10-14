@@ -1,0 +1,41 @@
+#!/bin/bash
+DLE[1]="/www/ww"
+DLE[2]="/www/backup"
+DLE[3]="/www/odmin"
+DLE[4]="/www/forum"
+DLE[5]="/www/badbrowser"
+export START_COUNT=0
+export FIN_COUNT=0
+export LOST=0
+for ((o=1;o<6;o++))
+    do
+	echo "#Processing ${DLE[$o]}";
+        export FILES=`find ${DLE[$o]} -iname '*.js' -o -iname '*.css' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.gif' -o -iname '*.jpeg'`;
+	for i in $FILES
+    	    do
+        	if [[ ( ( -a $i.gz ) && ( $i.gz -ot $i ) ) || ( ! -a $i.gz ) ]];
+        	    then 
+    			echo "****Gzipping $i";
+        		gzip -9 -c "$i" > "$i.gz";
+        	else
+        	    echo "No Gzip needed for $i";
+        	fi;
+        	TEMP_C=`cat $i|wc -c`;
+        	START_COUNT=`echo $START_COUNT+$TEMP_C|bc`;
+        	TEMP_C2=`cat $i.gz|wc -c`;
+        	echo "****Gzipped $i###$TEMP_C->$TEMP_C2";
+        	if [ $TEMP_C -lt $TEMP_C2 ];
+        	    then echo "#WORSE";
+        		 LOST=`echo $LOST+$TEMP_C2-$TEMP_C|bc`;
+        	fi;
+        	FIN_COUNT=`echo $FIN_COUNT+$TEMP_C2|bc`;
+	    done;
+    done;
+echo "#Finished"
+echo "#Size before $START_COUNT"
+echo "#Size after $FIN_COUNT"
+echo "#Ratio `echo $FIN_COUNT.0/$START_COUNT.0|bc`"
+SAVED=`echo -$FIN_COUNT+$START_COUNT|bc`
+echo "#Saved $SAVED"
+echo "#Lost $LOST"
+echo "#Saved place could be `echo $SAVED+$LOST|bc`"

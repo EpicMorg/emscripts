@@ -1,0 +1,19 @@
+#!/sbin/runscript
+# Copyright (c) 2012 kasthack <roy@marples.name>
+# All rights reserved. Released under the 2-clause BSD license.
+
+description="Turn on binfmt_misc support"
+
+depend()
+{
+	need localmount
+	need procfs
+}
+
+start()
+{
+    echo "Windows exe"
+    echo ':DOSWin:M::MZ::/usr/bin/wine:' > /proc/sys/fs/binfmt_misc/register
+    echo "Mono"
+    echo ':CLR:M::MZ::/usr/bin/mono:' > /proc/sys/fs/binfmt_misc/register
+}

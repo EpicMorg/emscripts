@@ -1,0 +1,124 @@
+#!/sbin/runscript
+#copyright kasthack 2k12
+#I know that this code is shit but i'm don't know bash enough to make it nice
+
+create_all()
+{
+	for i in $@
+		do
+		if [ $1 != $i ];
+			then
+				tmp_p="$1"$i;
+				echo "	Checking $tmp_p";
+				if [ ! -d  $tmp_p ];
+					then 
+					mkdir $tmp_p;
+					echo "		Created $tmp_p";
+				else 
+					echo "		Found $tmp_p";
+				fi;
+		fi;
+    done;
+}
+
+depend() {
+    	need procfs
+	need localmount
+	before *
+}
+
+start()
+{
+    ebegin Restoring temporary folders
+    
+    ##DLE
+		einfo DLE
+		export DLE_DIR=/var/www/localhost/htdocs/ww/engine
+		tar xjf $DLE_DIR/cache.tar.bz2 -C $DLE_DIR
+    ##/DLE
+    
+    #var
+        var_tmp[1]="nginx"
+        var_tmp[2]="nginx/client"
+        var_tmp[3]="nginx/fastcgi"
+        var_tmp[4]="nginx/proxy"
+        var_tmp[5]="nginx/scgi"
+        var_tmp[6]="nginx/uwsgi"
+        var_tmp[7]="ccache"
+        var_tmp[0]="portage"
+        
+        var_cache[1]="man"
+        var_cache[2]="ldconfig"
+        var_cache[3]="revdep-rebuild"
+        var_cache[4]="apache2"
+        var_cache[5]="fontconfig"
+        var_cache[0]="edb"
+		var_cache[6]="eaccelerator-php5"
+		var_cache[7]="cups"		
+			
+        var_run[1]="aspnet"
+        var_run[2]="mysqld"
+        var_run[3]="proftpd"
+        var_run[0]="sepermit"
+        
+        root[0]="run/lock"
+        
+        use_var_tmp=1
+        use_var_cache=0
+		use_var_run=0
+        use_root=0
+###################################################################
+        einfo /var/run
+        if [[ ($use_var_run == 1) ]];
+        then
+        	create_all /var/run/ ${var_run[*]};
+			chown -R mysql:mysql /run/mysqld;
+			chown -R aspnet:aspnet /run/aspnet;
+			chown -R ftp:ftp /run/proftpd;
+		fi;
+###################################################################
+        einfo /var/tmp
+        if [[ ($use_var_tmp == 1) ]];
+        then
+        	create_all /var/tmp/ ${var_tmp[*]};
+        	chown -R nginx:nginx /var/tmp/nginx;
+			chown -R portage:portage /var/tmp/portage;
+        fi;
+###################################################################
+        einfo /var/cache
+        if [[ ($use_var_cache == 1) ]];
+        then
+        	create_all /var/cache/ ${var_cache[*]};
+			chown -R apache:apache /var/cache/apache2;
+			chown -R apache:apache /var/cache/eaccelerator-php5;
+			chown -R root:portage /var/cache/edb;
+			chown -R root:lp /var/cache/cups
+        fi;
+###################################################################
+        einfo /
+		if [[ ($use_root == 1) ]];
+	    then
+	    	create_all / ${root[*]};
+        fi;
+    ##/var
+###################################################################
+    ##Portage
+		einfo Unpacking portage tree to storage
+		portagestore="/mnt/temp/sys_dirs"
+		cd $portagestore
+		echo tar -C /usr/ xjpf ${portagestore}/portage.tar.bz2
+    ##/portage
+
+    eend 
+}
+
+stop()
+{
+    ebegin
+		#portagestore="/mnt/temp/sys_dirs"
+		#prf="portage.tar.bz2"
+		#cd $portagestore
+		#mv $prf $prf.old 2>/dev/null >/dev/null
+		#tar cjf $prf portage
+    eend
+}

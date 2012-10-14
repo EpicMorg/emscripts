@@ -1,0 +1,38 @@
+#!/bin/bash
+export SEP=####################################################################################
+export TEMP1=/tmp/`id -u`/
+export TEMP2=$RANDOM
+if [ ! -d $TEMP1 ]; then
+	echo $SEP
+	echo creating path for user with id `id -u`
+	echo $TEMP1
+	echo $SEP
+	mkdir $TEMP1
+fi
+cd $TEMP1
+echo $SEP
+echo creating $TEMP2
+echo $SEP
+mkdir $TEMP2
+cd $TEMP2
+echo $SEP
+echo Compiling
+echo $SEP
+git clone git://github.com/kasthack/GAS.git
+cd GAS
+xbuild /noconsolelogger /verbosity:quiet
+cd GAS.TUI
+cd bin
+cd Debug
+echo $SEP
+echo running
+echo $SEP
+mono *.exe
+echo $SEP
+echo making cleanup
+echo $SEP
+cd $TEMP1
+rm -rf $TEMP2
+cd /tmp
+rm -rf $TEMP1
+

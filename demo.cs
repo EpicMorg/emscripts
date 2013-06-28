@@ -1,0 +1,11 @@
+using System.IO;
+var s = File.ReadAllLines("bench").Take(100000);
+var sort_arr = s.ToArray();
+Time(()=> Array.Sort(sort_arr, (a,b)=>String.Compare(a,b,StringComparison.Ordinal)));
+var sort_arr2 = s.ToArray();
+Time(()=> Array.Sort(sort_arr));
+var s = File.ReadAllLines("bench").Take(1000000);
+var sort_arr = s.ToArray();
+Time(()=> Array.Sort(sort_arr, (a,b)=>String.Compare(a,b,StringComparison.Ordinal)));
+var sort_arr2 = s.ToArray();
+Time(()=> Array.Sort(sort_arr));

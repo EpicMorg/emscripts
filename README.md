@@ -3,6 +3,8 @@ emscripts
 
 Miscellaneous scripts and programs
 
+*add_domain.cs - C# script to add domains to apache+nginx
+
 *ArrayExt.cs - BinarySearch with custom Comparison+little optimizations
 
 *binfmt_misc.run - Gentoo runscript to add support 4 wine and mono in binfmt-misc

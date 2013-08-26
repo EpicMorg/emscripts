@@ -47,7 +47,7 @@ string apache_vhost_string =@"
 
 string subdomain_rewrite = @"
 	RewriteCond %{HTTP_HOST} !^www.{USER_DOMAIN}$
-	RewriteCond %{HTTP_HOST} ^((.*)\.{USER_DOMAIN}
+	RewriteCond %{HTTP_HOST} ^(.*)\.{USER_DOMAIN}
 	RewriteRule ^/(.*) /%2/$1";
 
 //'It works' page template

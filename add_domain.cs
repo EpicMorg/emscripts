@@ -39,13 +39,14 @@ string apache_vhost_string =@"
 	ServerAlias {1} *.{1}
 	DocumentRoot {2}/{4}
 	Include /etc/apache2/vhosts.d/env.include{3}
-</VirtualHost>\r\n";
+</VirtualHost>
+";
 
 //Apache configuration: rewrites for subdomains
 //{USER_DOMAIN} will be replaced with ur domain
 
 string subdomain_rewrite = @"
-	RewriteCon %{HTTP_HOST} !^www.{USER_DOMAIN}$
+	RewriteCond %{HTTP_HOST} !^www.{USER_DOMAIN}$
 	RewriteCond %{HTTP_HOST} ^((.*)\.{USER_DOMAIN}
 	RewriteRule ^/(.*) /%2/$1";
 

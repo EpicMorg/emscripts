@@ -1,8 +1,8 @@
 //requires github.com/EpicMorg/AdvancedWebClient
 
 
-var init=20070806;//first pic
-var d = @"<save_dir>";
+var init=20070806;
+var d = @"B:\bash_comics";
 
 var hasNext=true;
 var r = new Regex("[0-9]{8}");
@@ -14,7 +14,7 @@ while(hasNext){
 	
 	var img = ir.Match(dmp).Value;
 	if (img!=""){
-		AWC.DownloadFile(img, Path.Combine(d, Path.GetFileName(img)));
+		AWC.DownloadFile(img, Path.Combine(d, cur.ToString()+".jpg"));
 		img.Dump();
 	}
 	//next
